@@ -1,0 +1,17 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "AllowSpecificRole",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::<YOUR_AWS_ACCOUNT_ID>:role/<YOUR_TEST_ROLE>"
+      },
+      "Action": "s3:GetObject",
+      "Resource": [
+        "arn:aws:s3:::<YOUR_TEST_BUCKET_NAME>",
+        "arn:aws:s3:::<YOUR_TEST_BUCKET_NAME>/*"
+      ]
+    }
+  ]
+}

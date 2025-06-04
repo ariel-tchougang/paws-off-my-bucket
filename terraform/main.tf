@@ -1,0 +1,19 @@
+terraform {
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = ">= 5.0"
+    }
+  }
+}
+
+provider "aws" {
+  region = var.aws_region
+}
+
+module "demo_iam_roles" {
+  source = "./modules/iam_roles"
+
+  bucket_name = var.bucket_name
+  environment = var.environment
+}

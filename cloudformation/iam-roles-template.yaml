@@ -1,0 +1,113 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: CloudFormation template to create IAM roles for S3 access control demo.
+
+Parameters:
+  BucketName:
+    Type: String
+    Description: Name of the existing S3 bucket to which the policies will apply.
+
+  Environment:
+    Type: String
+    Default: demo
+    Description: Tag value for environment label (e.g., dev, test, prod).
+
+Resources:
+
+  DemoNoS3PermissionsRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: DemoNoS3PermissionsRole
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              AWS: !Sub arn:aws:iam::${AWS::AccountId}:root
+            Action: sts:AssumeRole
+      Tags:
+        - Key: Environment
+          Value: !Ref Environment
+
+  DemoS3AccessGrantedRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: DemoS3AccessGrantedRole
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              AWS: !Sub arn:aws:iam::${AWS::AccountId}:root
+            Action: sts:AssumeRole
+      Policies:
+        - PolicyName: AllowS3GetObjectAccess
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action: s3:GetObject
+                Resource:
+                  - !Sub arn:aws:s3:::${BucketName}
+                  - !Sub arn:aws:s3:::${BucketName}/*
+      Tags:
+        - Key: Environment
+          Value: !Ref Environment
+
+  DemoDuplicateS3AccessGrantedRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: DemoDuplicateS3AccessGrantedRole
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              AWS: !Sub arn:aws:iam::${AWS::AccountId}:root
+            Action: sts:AssumeRole
+      Policies:
+        - PolicyName: DuplicateAllowS3GetObjectAccess
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action: s3:GetObject
+                Resource:
+                  - !Sub arn:aws:s3:::${BucketName}
+                  - !Sub arn:aws:s3:::${BucketName}/*
+      Tags:
+        - Key: Environment
+          Value: !Ref Environment
+
+  DemoS3AccessDeniedRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: DemoS3AccessDeniedRole
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              AWS: !Sub arn:aws:iam::${AWS::AccountId}:root
+            Action: sts:AssumeRole
+      Policies:
+        - PolicyName: DenyS3GetObjectAccess
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Deny
+                Action: s3:GetObject
+                Resource:
+                  - !Sub arn:aws:s3:::${BucketName}
+                  - !Sub arn:aws:s3:::${BucketName}/*
+      Tags:
+        - Key: Environment
+          Value: !Ref Environment
+
+Outputs:
+  DemoRoles:
+    Description: IAM roles created for the S3 access control demo
+    Value: |
+      - DemoNoS3PermissionsRole
+      - DemoS3AccessGrantedRole
+      - DemoDuplicateS3AccessGrantedRole
+      - DemoS3AccessDeniedRole
