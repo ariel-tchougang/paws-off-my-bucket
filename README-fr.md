@@ -238,7 +238,6 @@ aws s3api put-bucket-policy \
 4. Cliquer **Modifier** sur la partie `Bucket policy`
 5. Coller le code de votre bucket policy
 6. Cliquer sur **Enregistrer**
-```
 
 ---
 
