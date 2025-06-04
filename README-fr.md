@@ -241,7 +241,7 @@ aws s3api put-bucket-policy \
 
 ---
 
-### 🔎 6. Tester l’accès à l’objet
+### 🔎 7. Tester l’accès à l’objet
 
 #### AWS CLI
 
